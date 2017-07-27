@@ -9,10 +9,7 @@ import { ListPage } from '../pages/list/list';
 import { LoginPage } from '../pages/login/login-page';
 import { NpDashPage } from '../pages/np-dash/np-dash';
 import { VolunteerDashPage } from '../pages/volunteer-dash/volunteer-dash';
-import { NploginPage } from '../pages/nplogin/nplogin';
-import { VolunteerloginPage } from '../pages/volunteerlogin/volunteerlogin';
 import { Geolocation } from '@ionic-native/geolocation';
-
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -26,7 +23,7 @@ import { ManageEventsPage } from "../pages/manage-events/manage-events";
 import { HttpModule, JsonpModule } from '@angular/http';
 import { NpCalProvider } from '../providers/np-cal/np-cal';
 import { CreateEventPage } from '../pages/create-event/create-event';
-
+import { EinPage } from '../pages/ein/ein';
 
 
 @NgModule({
@@ -38,10 +35,9 @@ import { CreateEventPage } from '../pages/create-event/create-event';
     LoginPage,
     NpDashPage,
     VolunteerDashPage,
-    NploginPage,
-    VolunteerloginPage,
     ManageEventsPage,
-    CreateEventPage
+    CreateEventPage,
+    EinPage,
   ],
   imports: [
     BrowserModule,
@@ -62,10 +58,9 @@ import { CreateEventPage } from '../pages/create-event/create-event';
     LoginPage,
     NpDashPage,
     VolunteerDashPage,
-    NploginPage,
-    VolunteerloginPage,
     ManageEventsPage,
-    CreateEventPage
+    CreateEventPage,
+    EinPage,
   ],
   providers: [
     StatusBar,

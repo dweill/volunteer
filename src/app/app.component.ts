@@ -7,14 +7,11 @@ import { ListPage } from '../pages/list/list';
 import { LoginPage } from '../pages/login/login-page';
 import { NpDashPage } from '../pages/np-dash/np-dash';
 import { VolunteerDashPage } from '../pages/volunteer-dash/volunteer-dash'
-import { NploginPage } from '../pages/nplogin/nplogin';
-import { VolunteerloginPage } from '../pages/volunteerlogin/volunteerlogin';
-
+import { EinPage } from '../pages/ein/ein';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { OAuthProvidersListPage } from '../pages/oauth/list/oauth-providers.list.page';
 import { Geolocation } from '@ionic-native/geolocation';
-import { ManageEventsPage } from "../pages/manage-events/manage-events";
+import { ManageEventsPage } from '../pages/manage-events/manage-events';
 
 
 @Component({
@@ -37,9 +34,7 @@ export class MyApp {
 
     // set our app's pages
     this.pages = [
-      // { title: 'Dashboard', component: HelloIonicPage },
       { title: 'Nearby Opportunities', component: ListPage },
-      // { title: 'Login Page', component: LoginPage },
       { title: 'Non-Profit Dash', component: NpDashPage },
       { title: 'Volunteer Dash', component: VolunteerDashPage },
       { title: 'Manage Events', component: ManageEventsPage }
