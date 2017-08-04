@@ -12,7 +12,8 @@
     </ion-fab-list>
   </ion-fab>
   <img src={{profile.photo.data.url}} *ngIf="!!profile" style="display:inline-block;width:auto;position:relative"/>
-  <div *ngIf="!edit" style="display:inline-block;width:75%;position:relative">{{description}}</div> 
+  <div *ngIf="!edit" style="display:inline-block;width:75%;position:relative">{{description}}</div>
+  <div style="display:inline-block;width:75%;position:relative">Add/Edit Description</div>
   <textarea *ngIf="!!edit" style="display:inline-block;width:75%;position:relative" [(ngModel)]="newDescription">{{description}}</textarea>
   <ion-icon *ngIf="!!edit" (click)="submitDescription()" style="width:6%;display:inline-block;position:relative;float:right; margin-right:2em" name="md-create"></ion-icon>
   <ion-icon *ngIf="!edit" (click)="editDescription()" style="width:6%;display:inline-block;position:relative;float:right; margin-right:2em" name="md-create"></ion-icon>

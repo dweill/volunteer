@@ -42,9 +42,6 @@ export class CreateEventPage {
       timeOfDay: 'AM'
     },
     end: {
-      // month: this.allMonths[new Date().getMonth()],
-      // day: new Date().getDate().toString(),
-      // year: new Date().getFullYear(),
       hour: '9',
       minute: '00',
       timeOfDay: 'AM'

@@ -38,8 +38,7 @@
 - AWS ec2
 - express 4.15.3
 - Google Maps API
-- Google Calendar API
-- propublica API
+- Propublica API
 - passport 0.3.2
 - Karma
 - Jasmine

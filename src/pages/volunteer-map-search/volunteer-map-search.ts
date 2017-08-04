@@ -216,7 +216,7 @@ Geocoder.geocode(req).then(((results)=>{
   })
   };
   search() {
-    this.searched = true;
+    this.searched = !this.searched;
     this.results = [];
     this.NpCalProvider.getCalEvents({query: `{event{
         id
