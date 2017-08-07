@@ -1,74 +1,60 @@
-<!--
-  Generated template for the VolunteerDashPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
- 
-<!-- <script src="http://maps.google.com/maps/api/js?key=${process.env.GOOGLE_MAP_API_KEY}"></script>
-
- <script type="text/javascript">
-    var map;
-    document.addEventListener("deviceready", function() {
-      var div = document.getElementById("map_canvas");
-
-      // Initialize the map view
-      map = plugin.google.maps.Map.getMap(div);
-
-      // Wait until the map is ready status.
-      map.addEventListener(plugin.google.maps.event.MAP_READY, onMapReady);
-    }, false);
-
-    function onMapReady() {
-      var button = document.getElementById("button");
-      button.addEventListener("click", onBtnClicked, false);
-    }
-
-    function onBtnClicked() {
-      map.showDialog();
-    }
-    </script> -->
-
 <ion-header>
-
   <ion-navbar>
-    <ion-title>Volunteer Dash</ion-title>
-         <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-buttons end>
-      <button ion-button><ion-icon name="add"></ion-icon>Search</button>
-    </ion-buttons>  
+    <ion-title *ngIf="!!profile">{{this.profile.firstName}} {{this.profile.lastName}} - Voluntree</ion-title>
   </ion-navbar>
-<!--   <ion-list *ngIf="!!profile">
-  <img src={{profile.photo.data.url}}/>
-    <ion-item>
-      <h2>Name</h2>
-      <p>{{profile.firstName}} {{profile.lastName}}</p>
-    </ion-item>
-  </ion-list> -->
 </ion-header>
 
 <ion-content padding>
-  <!-- <div #map id="map"></div>   -->
-  <!-- <div style="width:100%;height:400px" id="map_canvas"></div> -->
-  <div id="map"></div>
-     <div *ngIf="coords">
+    <ion-fab top right edge>
+    <button ion-fab><ion-icon md="md-map"></ion-icon></button>
+    <ion-fab-list>
+      <button ion-fab (click)="goToVolunteerMapSearchPage()"><ion-icon name="search"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
+  <img src={{profile.photo.data.url}} *ngIf="!!profile" style="display:inline-block;width:auto;position:relative"/>
+  <div *ngIf="!edit" style="display:inline-block;width:75%;position:relative">{{description}}</div> 
+  <textarea *ngIf="!!edit" style="display:inline-block;width:75%;position:relative" [(ngModel)]="newDescription">{{description}}</textarea>
+  <ion-icon *ngIf="!!edit" (click)="submitDescription()" style="width:6%;display:inline-block;position:relative;float:right; margin-right:2em" name="md-create"></ion-icon>
+  <ion-icon *ngIf="!edit" (click)="editDescription()" style="width:6%;display:inline-block;position:relative;float:right; margin-right:2em" name="md-create"></ion-icon>
+  <div>
   </div>
-
-<ion-content padding class="propublic">
+  <div *ngIf="notifications.length">
   <ion-list>
-    <ion-item *ngFor="let item of propublic; let i = index;">
+    <ion-item class="border" *ngFor="let notification of notifications; let i = index;" text-wrap>
       <ion-avatar item-left>
-         <img src="https://d30y9cdsu7xlg0.cloudfront.net/png/148483-200.png"> 
-      </ion-avatar>
-       <h2>{{item.name}}</h2> 
-      <p>{{item.address}} 
-        {{item.city}}, {{item.state}}</p>
-    </ion-item>
+            <ion-icon (click)="deleteNotice(notification.id)" style="font-size: 30px;" name="md-close-circle"></ion-icon>
+      </ion-avatar> 
+      <h1>Notice!</h1>
+      <h2>We're sorry to inform you that you have been removed from {{notification.event.description}} beginning at {{notification.event.time}} by {{notification.ngo.username}}.
+      {{notification.ngo.username}} apologizes for any inconvenience.</h2>
+    </ion-item >
   </ion-list>
-</ion-content>
+  </div>
+  <br>
+      <ion-card>
+  <!-- <img src="http://i.imgur.com/myHsaZj.png"/> -->
+  <ion-card-content>
+    <ion-card-title>
+Badges Earned
+      </ion-card-title>
+    <!-- <p>
+  You've Earned A
+    </p> -->
+  </ion-card-content>
+</ion-card>
+
+<ion-card *ngFor="let id of ids"> 
+   <!-- <img class="col-33" *ngSrc="badgeSrcArray[id]" />  -->
+   <img class="col-33" [src]="badgeSrcArray[id]" />
+  <ion-card-content>
+     <ion-card-title>
+ You've earned the {{badgeNameArray[id]}} Badge!
+      </ion-card-title> 
+    </ion-card-content>
+  </ion-card>
+    <br>
+    <br>
     <div>
       <button class="logout-button" (click)="logout()">Log out</button>
-    </div>
+    </div>  
 </ion-content>

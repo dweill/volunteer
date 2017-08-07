@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
+import { NavController, NavParams, ViewController, ModalController, AlertController } from 'ionic-angular';
 import { NpCalProvider } from '../../providers/np-cal/np-cal';
 import { NpDashPage } from '../np-dash/np-dash';
+import { Storage } from '@ionic/storage';
+import { AutocompletePage } from '../autocomplete/autocomplete';
+
 // import * as moment from 'moment';
 /**
  * Generated class for the CreateEventPage page.
@@ -17,25 +20,31 @@ import { NpDashPage } from '../np-dash/np-dash';
 })
 export class CreateEventPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public ViewController: ViewController, public NpCalProvider: NpCalProvider) {
+  constructor(private modalCtrl: ModalController, public navCtrl: NavController, public navParams: NavParams, public ViewController: ViewController, public NpCalProvider: NpCalProvider, public storage: Storage, public AlertController: AlertController) {
+    this.address = {
+      place: ''
+    };
   }
+  public address;
+  public date;
   public allMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   
   public allStates = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'];
   public event = {
     description: '',
+
     start: {
-      month: this.allMonths[new Date().getMonth()],
-      day: new Date().getDate().toString(),
-      year: new Date().getFullYear(),
+      month: this.allMonths[new Date(this.date).getMonth()],
+      day: new Date(this.date).getDate().toString(),
+      year: new Date(this.date).getFullYear(),
       hour: '8',
       minute: '00',
       timeOfDay: 'AM'
     },
     end: {
-      month: this.allMonths[new Date().getMonth()],
-      day: new Date().getDate().toString(),
-      year: new Date().getFullYear(),
+      // month: this.allMonths[new Date().getMonth()],
+      // day: new Date().getDate().toString(),
+      // year: new Date().getFullYear(),
       hour: '9',
       minute: '00',
       timeOfDay: 'AM'
@@ -56,11 +65,33 @@ export class CreateEventPage {
   public city;
   public state;
   public zipCode;
+  public grabber;
+  public id;
 
-  ionViewDidLoad() {
+  
+
+async ionViewDidLoad() {
     this.getDays();
     this.getYears();
+  this.id = await this.storage.get('id');
+  this.date = await this.storage.get('selected')
+  this.address.place = await this.storage.get('address')
+  this.event.start.month = this.allMonths[new Date(this.date).getMonth()]
+  this.event.start.day = new Date(this.date).getDate().toString()
+  this.event.start.year = new Date(this.date).getFullYear()
   }
+
+  showAddressModal() {
+    console.log('hit')
+    let modal = this.modalCtrl.create(AutocompletePage);
+    let me = this;
+    modal.onDidDismiss(data => {
+      me.address.place = data;
+    });
+    modal.present();
+    console.log('hit again')
+  }
+
   getDays() {
     this.allDays = [];
     for (let i = 1; i < 32; i++) {
@@ -93,52 +124,96 @@ export class CreateEventPage {
     }
     
     postNewEvent() {
-      if (this.streetAddress.length < 0) {
-        alert('Your event is nowhere. Please add a street address.');
+      let cityAlert = this.AlertController.create({
+        title: 'City Required',
+        message: 'Your event is nowhere. Please add a place.',
+        buttons: [
+          {
+            text: 'OK',
+            role: 'cancel',
+            handler: () => {
+              console.log('cancelled');
+            }
+          }
+        ]
+      });
+      let overAlert = this.AlertController.create({
+        title: 'Invalid Event Times',
+        message: 'Your event is over before it begins. Please select a different start or end time.',
+        buttons: [
+          {
+            text: 'OK',
+            role: 'cancel',
+            handler: () => {
+              console.log('cancelled');
+            }
+          }
+        ]
+      });
+      let elapsedAlert = this.AlertController.create({
+        title: 'Invalid Event',
+        message: 'There\'s no going back. Please select a different start time.',
+        buttons: [
+          {
+            text: 'OK',
+            role: 'cancel',
+            handler: () => {
+              console.log('cancelled');
+            }
+          }
+        ]
+      });
+      let nameAlert = this.AlertController.create({
+        title: 'Event Name Require',
+        message: 'Your event has no name. Please add one.',
+        buttons: [
+          {
+            text: 'OK',
+            role: 'cancel',
+            handler: () => {
+
+            }
+          }
+        ]
+      });
+      if (!this.id) {
         return;
       }
-      if (this.city.length < 0) {
-        alert('Your event is nowhere. Please add a city.');
+      if (this.address.place < 0) {
+        cityAlert.present();
         return;
       }
-      if (this.zipCode.length < 5) {
-        alert('Your zipcode is invalid. Please enter a valid zipcode.');
-        return;
-      }
-      if (this.state.length < 2) {
-        alert('Please select a state.');
-        return;
-      }
-      this.event.location = this.streetAddress + " " + this.city + ', ' + this.state + " " + this.zipCode;
+      this.event.location = this.address.place;
       let myStartMonth = (this.allMonths.indexOf(this.event.start.month) + 1).toString();
       if (myStartMonth.length < 2) {
         myStartMonth = '0' + myStartMonth;
       }
-      let myEndMonth = (this.allMonths.indexOf(this.event.end.month) + 1).toString();
-      if (myEndMonth.length < 2) {
-        myEndMonth = '0' + myEndMonth;
-      }
       let startInfo = this.event.start.year.toString() +'/' + myStartMonth + '/' + this.event.start.day + " " + (this.event.start.hour + ":" + this.event.start.minute + " " + this.event.start.timeOfDay);
-      let endInfo = this.event.end.year.toString() +'/' + myEndMonth + '/' + this.event.end.day + " " + (this.event.end.hour + ":" + this.event.end.minute + " " + this.event.end.timeOfDay);
+      let endInfo = this.event.start.year.toString() +'/' + myStartMonth + '/' + this.event.start.day + " " + (this.event.end.hour + ":" + this.event.end.minute + " " + this.event.end.timeOfDay);
       let startDate = new Date(startInfo);
       let endDate = new Date(endInfo);
-      if (endDate.getTime() < startDate.getTime()) {
-        alert('Your event is over before it begins. Please select a different start or end time.');
+      if (endDate.getTime() <= startDate.getTime()) {
+        overAlert.present();
         return;
       }
       if (startDate.getTime() < Date.now()) {
-        alert('There\'s no going back. Please select a different start time.')
+        elapsedAlert.present();
         return;
       }
       let start = startDate.toString();
       let end = endDate.toString();
       let description = this.event.description;
       if (description.length < 1) {
-        alert('Your event has no name. Please add one.');
+        nameAlert.present();
         return;
       }
       let location = this.event.location;
-      this.NpCalProvider.postCalEvent({query: `mutation{event(event_start: "${start}", event_end: "${end}", description: "${description}", event_address: "${location}", ngo_id: 1){
+      console.log(start)
+      console.log(end)
+      console.log(description)
+      console.log(location)
+      console.log(this.id)
+      this.NpCalProvider.postCalEvent({query: `mutation{event(event_start: "${start}", event_end: "${end}", description: "${description}", event_address: "${location}", ngo_id: ${this.id}){
         event_start
         event_end
         description

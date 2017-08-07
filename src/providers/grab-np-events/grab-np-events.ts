@@ -69,4 +69,91 @@ export class GrabNpEventsProvider {
     });
   })
 };
+  grabVolunteers(event_id) {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post('http://ec2-13-59-91-202.us-east-2.compute.amazonaws.com:3000/graphql', {
+          query: `{schedule(event_id: ${event_id}){id volunteer_id volunteer_start volunteer_end attended}}`
+        })
+        .subscribe(res => {
+          resolve(res)
+        }, err => {
+          reject(err)
+        })
+    })
+  }
+
+  grabVolunteer(vol_id) {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post('http://ec2-13-59-91-202.us-east-2.compute.amazonaws.com:3000/graphql', {
+          query: `{volunteer(id: ${vol_id}){name description profile_img}}`
+        })
+        .subscribe(res => {
+          resolve(res)
+        }, err => {
+          reject(err)
+        })
+    })
+  }
+
+  addEventRemoved(ngo, vol, event) { 
+    return new Promise((resolve, reject) => {
+      this.http
+        .post('http://ec2-13-59-91-202.us-east-2.compute.amazonaws.com:3000/graphql', {
+          query: `mutation {events_removed (ngo_id: ${ngo}, volunteer_id: ${vol}, event_id: ${event}){id}}`
+        })
+        .subscribe(res => {
+          resolve(res)
+        }, err => {
+          reject(err)
+        })
+    })
+  }
+
+  deleteSchedule(id) { 
+    return new Promise((resolve, reject) => {
+      this.http
+        .post('http://ec2-13-59-91-202.us-east-2.compute.amazonaws.com:3000/graphql', {
+          query: `mutation {schedule (action: "delete", id: ${id}) {id}}`
+        })
+        .subscribe(res => {
+          resolve(res)
+        }, err => {
+          reject(err)
+        })
+    })
+  }
+
+  updateAttendance(id, attend) {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post('http://ec2-13-59-91-202.us-east-2.compute.amazonaws.com:3000/graphql', {
+          query: `mutation {schedule (action: "update", id: ${id}, attended: "${attend}"){id attended}}`
+        })
+        .subscribe(res => {
+          resolve(res);
+        }, err => {
+          reject(err);
+        })
+    })
+  }
+
+  addBadge(vol, type) {
+    let types = ['', 'Religious', 'Arts and Culture', 'Education', 'Health', 'International', 'Environmental', 'Animal']
+    let typeid = types.indexOf(type);
+    return new Promise((resolve, reject) => {
+      this.http
+        .post('http://ec2-13-59-91-202.us-east-2.compute.amazonaws.com:3000/graphql', {
+          query: `mutation {badges_volunteer (volunteerId: ${vol}, badgeId: ${typeid}){volunteerId}}`
+        })
+        .subscribe(res => {
+          resolve(res)
+        }, err => {
+          reject(err)
+        })
+    })
+  }
+
+
 }
